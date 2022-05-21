@@ -77,6 +77,7 @@ jooq {
                     database {
                         name = 'org.jooq.meta.postgres.PostgresDatabase'
                         inputSchema = 'main'
+                        excludes = "flyway.*"
                     }
                     generate {
                         deprecated = false
