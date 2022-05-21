@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kadmosdemo
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+logging:
+  level:
+    root: INFO
