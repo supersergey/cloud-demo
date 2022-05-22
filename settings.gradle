@@ -1,1 +1,3 @@
 rootProject.name = 'kadmos'
+include('gateway')
+include('account-service')

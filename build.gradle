@@ -2,96 +2,27 @@ plugins {
     id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'org.flywaydb.flyway' version '8.5.10'
-    id "nu.studer.jooq" version "7.1.1"
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-targetCompatibility = 1.17
+allprojects {
+    group = 'io.kadmos.demo'
+    version = '0.0.1-SNAPSHOT'
+    targetCompatibility = 1.17
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
 
 dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-    implementation 'org.springframework:spring-jdbc'
-    implementation 'org.springframework.data:spring-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
-
-    implementation 'org.flywaydb:flyway-core'
-    jooqGenerator 'org.postgresql:postgresql:42.3.4'
-    jooqGenerator 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
-
-//    runtimeOnly 'io.r2dbc:r2dbc-postgresql:0.8.12.RELEASE'
-    runtimeOnly 'org.postgresql:postgresql:42.3.5'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.testcontainers:testcontainers:1.17.1'
     testImplementation "org.testcontainers:junit-jupiter:1.17.1"
-    testImplementation 'org.testcontainers:postgresql:1.17.1'
-
     testImplementation 'org.assertj:assertj-core:3.22.0'
-
     testImplementation 'org.mockito:mockito-junit-jupiter:4.5.1'
 }
-
 tasks.named('test') {
     useJUnitPlatform()
 }
 targetCompatibility = 1.17
-
-def secrets = new Properties()
-secrets.load(new FileInputStream(new File(rootProject.rootDir, 'src/main/resources/secrets/secrets.properties')))
-
-flyway {
-    url = secrets.get('jdbc_url')
-    user = secrets.get('jdbc_user')
-    password = secrets.get('jdbc_password')
-    locations = ['classpath:db/migration']
-    baselineVersion = '-1'
-    baselineOnMigrate = true
-    table = 'flyway_schema_history'
-    createSchemas = true
-    driver = secrets.get('driver_class_name')
-    schemas = ['main']
-    defaultSchema = 'main'
-}
-
-jooq {
-    configurations {
-        main {
-            generateSchemaSourceOnCompilation = false
-            generationTool {
-                jdbc {
-                    driver = secrets.get('driver_class_name')
-                    url = secrets.get('jdbc_url')
-                    user = secrets.get('jdbc_user')
-                    password = secrets.get('jdbc_password')
-                }
-                generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
-                    database {
-                        name = 'org.jooq.meta.postgres.PostgresDatabase'
-                        inputSchema = 'main'
-                        excludes = "flyway.*"
-                    }
-                    generate {
-                        deprecated = false
-                        records = true
-                        immutablePojos = true
-                        fluentSetters = true
-                    }
-                    target {
-                        packageName = 'io.kadmos.demo.generated'
-                        directory = 'src/generated/jooq'  // default (can be omitted)
-                    }
-                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
-                }
-            }
-        }
-    }
-}

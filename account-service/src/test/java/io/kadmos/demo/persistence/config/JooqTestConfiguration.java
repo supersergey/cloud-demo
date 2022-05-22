@@ -1,4 +1,4 @@
-package io.kadmos.demo.persistence;
+package io.kadmos.demo.persistence.config;
 
 import org.flywaydb.core.Flyway;
 import org.jooq.DSLContext;

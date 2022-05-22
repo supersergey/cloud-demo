@@ -1,11 +1,11 @@
-package io.kadmos.demo.persistence;
+package io.kadmos.demo.persistence.config;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static io.kadmos.demo.persistence.JooqTestConfiguration.postgreSQLContainer;
+import static io.kadmos.demo.persistence.config.JooqTestConfiguration.postgreSQLContainer;
 
 public class JooqTestContainerExtension implements BeforeAllCallback, AfterAllCallback {
     @Override

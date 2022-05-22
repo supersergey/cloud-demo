@@ -1,5 +1,7 @@
 package io.kadmos.demo.persistence;
 
+import io.kadmos.demo.persistence.config.JooqTestConfiguration;
+import io.kadmos.demo.persistence.config.JooqTestContainerExtension;
 import io.kadmos.demo.persistence.model.Transaction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +41,7 @@ class TransactionRepositoryTest {
             accountId, BigDecimal.valueOf(-10.5)
         );
         var transactions = new ArrayList<Transaction>();
-        for(int i =0; i< 50; i++) {
+        for (int i = 0; i < 50; i++) {
             transactions.add(addBalanceTransaction);
             transactions.add(removeBalanceTransaction);
         }
