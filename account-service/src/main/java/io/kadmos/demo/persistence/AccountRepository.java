@@ -13,11 +13,11 @@ import java.util.UUID;
 import static io.kadmos.demo.generated.tables.Transaction.TRANSACTION;
 
 @Repository
-public class TransactionRepository {
+public class AccountRepository {
     private final DSLContext jooq;
 
     @Autowired
-    public TransactionRepository(DSLContext jooq) {
+    public AccountRepository(DSLContext jooq) {
         this.jooq = jooq;
     }
 

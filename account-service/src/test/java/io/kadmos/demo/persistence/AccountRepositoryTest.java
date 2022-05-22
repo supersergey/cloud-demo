@@ -24,10 +24,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ActiveProfiles("test")
 @Import(JooqTestConfiguration.class)
 @ExtendWith(JooqTestContainerExtension.class)
-class TransactionRepositoryTest {
+class AccountRepositoryTest {
 
     @Autowired
-    private TransactionRepository repository;
+    private AccountRepository repository;
 
     @Test
     void shouldExecuteTransactionsInARow() {
