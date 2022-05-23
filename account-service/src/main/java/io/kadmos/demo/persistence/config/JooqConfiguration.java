@@ -1,4 +1,4 @@
-package io.kadmos.demo.persistence;
+package io.kadmos.demo.persistence.config;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;

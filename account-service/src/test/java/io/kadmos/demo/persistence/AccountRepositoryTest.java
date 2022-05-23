@@ -30,6 +30,33 @@ class AccountRepositoryTest {
     private AccountRepository repository;
 
     @Test
+    void shouldReturnOptionalEmptyIfNoAccountFound() {
+        // given
+        var accountId = UUID.randomUUID();
+
+        // when
+        var actual = repository.getBalance(accountId);
+
+        // then
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void shouldReturnNewBalanceAfterSaved() {
+        // given
+        var accountId = UUID.randomUUID();
+        var transaction = new Transaction(
+            accountId, BigDecimal.valueOf(10.5)
+        );
+
+        // when
+        var actual = repository.save(transaction);
+
+        // then
+        assertThat(actual).usingComparator(BigDecimal::compareTo).isEqualTo(BigDecimal.valueOf(10.5));
+    }
+
+    @Test
     void shouldExecuteTransactionsInARow() {
         // given
         var accountId = UUID.randomUUID();
@@ -50,10 +77,12 @@ class AccountRepositoryTest {
         transactions.forEach(t -> repository.save(t));
 
         // when
-        var result = repository.getBalance(accountId);
+        var actual = repository.getBalance(accountId);
 
         // then
-        assertThat(result).usingComparator(BigDecimal::compareTo).isEqualTo(BigDecimal.valueOf(10.5));
+        assertThat(actual).isNotEmpty().get()
+            .usingComparator(BigDecimal::compareTo)
+            .isEqualTo(BigDecimal.valueOf(10.5));
     }
 
     @Test
@@ -82,7 +111,9 @@ class AccountRepositoryTest {
         }
 
         // then
-        assertThat(repository.getBalance(accountId))
+        var actual = repository.getBalance(accountId);
+        assertThat(actual)
+            .isNotEmpty().get()
             .usingComparator(BigDecimal::compareTo)
             .isEqualTo(BigDecimal.valueOf(1000));
     }

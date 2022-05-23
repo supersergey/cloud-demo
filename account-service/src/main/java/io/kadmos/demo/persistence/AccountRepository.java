@@ -3,11 +3,11 @@ package io.kadmos.demo.persistence;
 import io.kadmos.demo.persistence.model.Transaction;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 import static io.kadmos.demo.generated.tables.Transaction.TRANSACTION;
@@ -16,26 +16,36 @@ import static io.kadmos.demo.generated.tables.Transaction.TRANSACTION;
 public class AccountRepository {
     private final DSLContext jooq;
 
-    @Autowired
     public AccountRepository(DSLContext jooq) {
         this.jooq = jooq;
     }
 
-    public void save(Transaction transaction) {
+    public BigDecimal save(Transaction transaction) {
+        BigDecimalWrapper newAmount = new BigDecimalWrapper(BigDecimal.ZERO);
         jooq.transaction(configuration -> {
-                DSL.using(configuration).query(LOCK_QUERY).execute();
-                var query = buildAddQuery(transaction.accountId(), transaction.transactionAmount());
-                DSL.using(configuration).query(query).execute();
+                DSL.using(configuration).query(QueryFactory.LOCK_QUERY).execute();
+                var query = QueryFactory.getAddTransactionQuery(transaction.accountId(), transaction.transactionAmount());
+                var executionResult = DSL.using(configuration).fetch(query);
+                newAmount.add(
+                    new BigDecimal(executionResult.getValue(0, 0).toString())
+                ).add(
+                    new BigDecimal(executionResult.getValue(0, 1).toString())
+                );
             }
         );
+        return newAmount.value;
     }
 
-    public BigDecimal getBalance(UUID accountId) {
-        var lastRecord = lastTransaction(accountId);
-        return lastRecord.getFirst().add(lastRecord.getSecond());
+    public Optional<BigDecimal> getBalance(UUID accountId) {
+        var lastRecord = fetchLastTransaction(accountId);
+        if (lastRecord == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(lastRecord.getFirst().add(lastRecord.getSecond()));
+        }
     }
 
-    private Pair<BigDecimal, BigDecimal> lastTransaction(UUID accountId) {
+    private Pair<BigDecimal, BigDecimal> fetchLastTransaction(UUID accountId) {
         var lastRecord = jooq
             .select(TRANSACTION.OPENING_BALANCE, TRANSACTION.AMOUNT)
             .from(TRANSACTION)
@@ -44,33 +54,25 @@ public class AccountRepository {
             .limit(1)
             .fetchOne();
         if (lastRecord == null) {
-            return Pair.of(BigDecimal.ZERO, BigDecimal.ZERO);
+            return null;
+        } else {
+            return Pair.of(
+                lastRecord.getValue(TRANSACTION.OPENING_BALANCE),
+                lastRecord.getValue(TRANSACTION.AMOUNT)
+            );
         }
-        return Pair.of(
-            lastRecord.getValue(TRANSACTION.OPENING_BALANCE),
-            lastRecord.getValue(TRANSACTION.AMOUNT)
-        );
     }
 
-    private String buildAddQuery(UUID accountId, BigDecimal amount) {
-        return String.format(ADD_TRANSACTION_SQL_TEMPLATE, accountId, accountId, amount);
+    private class BigDecimalWrapper {
+        private BigDecimal value;
+
+        BigDecimalWrapper(BigDecimal initial) {
+            this.value = initial;
+        }
+
+        BigDecimalWrapper add(BigDecimal other) {
+            value = value.add(other);
+            return this;
+        }
     }
-
-    private final static String LOCK_QUERY = /*language=SQL*/ """
-            lock table main.transaction IN SHARE ROW EXCLUSIVE MODE;
-        """;
-
-    private final static String ADD_TRANSACTION_SQL_TEMPLATE = /*language=SQL*/ """
-        insert into main.transaction (account_id, opening_balance, amount)
-        values ( '%s',
-                coalesce(
-                    (select opening_balance + amount from main.transaction
-                     where account_id = '%s'
-                     order by id desc
-                     limit 1
-                     for update of transaction
-                     ), 0),
-                '%s'
-                );
-        """;
 }

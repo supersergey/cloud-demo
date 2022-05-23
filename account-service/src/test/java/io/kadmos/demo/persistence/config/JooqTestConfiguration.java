@@ -1,9 +1,10 @@
 package io.kadmos.demo.persistence.config;
 
-import org.flywaydb.core.Flyway;
+import io.kadmos.demo.configuration.ServiceProperties;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
