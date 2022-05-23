@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: gateway-service
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+gateway:
+  services:
+    - service-a:
+        baseUrl: http://localhost:8081
+        path: /balance
+        accounts:
+          - "fbf9f810-5b9d-4f08-bdc1-758703620b8e"
+    - service-b:
+        baseUrl: http://localhost:8082
+        path: /balance
+        accounts:
+          - "ffc5ea1e-6b76-426d-8038-c4134a1b73db"

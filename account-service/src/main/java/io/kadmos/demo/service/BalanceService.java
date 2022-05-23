@@ -18,6 +18,7 @@ public class BalanceService {
 
     public BalanceDto getBalance(UUID accountId) {
         return accountRepository.getBalance(accountId)
-            .flatMap(x -> Optional.of(new BalanceDto(x))).orElse(new BalanceDto(BigDecimal.ZERO));
+            .flatMap(amount -> Optional.of(new BalanceDto(amount)))
+            .orElse(new BalanceDto(BigDecimal.ZERO));
     }
 }
