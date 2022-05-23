@@ -21,10 +21,9 @@ dependencies {
 //    runtimeOnly 'io.r2dbc:r2dbc-postgresql:0.8.12.RELEASE'
     runtimeOnly 'org.postgresql:postgresql:42.3.5'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
     testImplementation 'org.testcontainers:testcontainers:1.17.1'
-    testImplementation "org.testcontainers:junit-jupiter:1.17.1"
+    testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
     testImplementation 'org.testcontainers:postgresql:1.17.1'
 
     testImplementation 'org.assertj:assertj-core:3.22.0'

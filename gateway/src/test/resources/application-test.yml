@@ -6,12 +6,11 @@ spring:
       web:
         exposure:
           include: "*"
-
   cloud:
     gateway:
       httpclient:
-        connect-timeout: 1000
-        response-timeout: 5s
+        connect-timeout: 500
+        response-timeout: 1s
 
 gateway:
   services:
@@ -20,12 +19,12 @@ gateway:
       methods:
         - GET
         - POST
-      baseUri: localhost:${wiremock.server.port}
-      routingPath: /balance
+      baseUri: http://localhost:${wiremock.server.port}
+      routingPath: /balance-a
     service-b:
       gatewayPath: /savings/b/balance
       methods:
         - GET
         - POST
-      baseUri: localhost:${wiremock.server.port}
-      routingPath: /balance
+      baseUri: http://localhost:${wiremock.server.port}
+      routingPath: /balance-b

@@ -3,11 +3,12 @@ package io.kadmos.demo.gateway.configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
-@ConfigurationProperties(prefix = "gateway.services")
+@ConfigurationProperties(prefix = "gateway")
 @Validated
 public record GatewayProperties(
-    @NotNull Map<String, ServiceDefinition> serviceDefinitionMap
+    @NotEmpty Map<String, ServiceDefinition> services
 ) { }
