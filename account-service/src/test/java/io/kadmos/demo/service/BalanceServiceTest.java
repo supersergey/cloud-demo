@@ -1,6 +1,7 @@
 package io.kadmos.demo.service;
 
 import io.kadmos.demo.persistence.AccountRepository;
+import io.kadmos.demo.persistence.model.Transaction;
 import io.kadmos.demo.web.dto.BalanceDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +31,11 @@ class BalanceServiceTest {
         clearInvocations(accountRepository);
     }
 
+    private final UUID accountId = UUID.randomUUID();
+
     @Test
     void shouldReturnBalanceForAnExistingAccount() {
         // given
-        var accountId = UUID.randomUUID();
         when(accountRepository.getBalance(any())).thenReturn(Optional.of(BigDecimal.valueOf(10)));
 
         // when
@@ -47,7 +49,6 @@ class BalanceServiceTest {
     @Test
     void shouldReturnZeroForAnNonExistingAccount() {
         // given
-        var accountId = UUID.randomUUID();
         when(accountRepository.getBalance(any())).thenReturn(Optional.empty());
 
         // when
@@ -56,5 +57,21 @@ class BalanceServiceTest {
         // then
         assertThat(actual).isEqualTo(new BalanceDto(BigDecimal.ZERO));
         verify(accountRepository).getBalance(accountId);
+    }
+
+    @Test
+    void shouldSaveTheAmountAndReturnAnUpdatedBalance() {
+        // given
+        when(accountRepository.save(any())).thenReturn(BigDecimal.valueOf(10.99));
+
+        // when
+        var actual = balanceService.addBalance(accountId, BigDecimal.valueOf(5));
+
+        // then
+        assertThat(actual.amount())
+            .usingComparator(BigDecimal::compareTo)
+            .isEqualTo(BigDecimal.valueOf(10.99));
+
+        verify(accountRepository).save(new Transaction(accountId, BigDecimal.valueOf(5)));
     }
 }
