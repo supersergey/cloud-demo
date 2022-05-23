@@ -11,6 +11,36 @@ services:
       - db.env
     volumes:
       - db:/var/lib/postgresql/data
+
+  account-service-a:
+    image: kadmos-demo/account-service
+    container_name: kadmos_demo_a
+    depends_on:
+      - "db"
+    ports:
+      - "8081:8081"
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://db:5432/kadmosdemo
+      SPRING_ACTIVE_PROFILE: service-a
+    networks:
+      - kadmos_default
+
+  account-service-b:
+    image: kadmos-demo/account-service
+    container_name: kadmos_demo_b
+    depends_on:
+      - "db"
+    ports:
+      - "8082:8082"
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://db:5432/kadmosdemo
+      SPRING_ACTIVE_PROFILE: service-a
+    networks:
+      - kadmos_default
 volumes:
   db:
     driver: local
+
+networks:
+  kadmos_default:
+    name: kadmos_default

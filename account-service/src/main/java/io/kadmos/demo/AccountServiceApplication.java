@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJdbcRepositories
 @EnableConfigurationProperties(ServiceProperties.class)
-public class KadmosApplication {
+public class AccountServiceApplication {
 	
 	public static void main(String[] args) {
-		SpringApplication.run(KadmosApplication.class, args);
+		SpringApplication.run(AccountServiceApplication.class, args);
 	}
 	
 }

@@ -88,3 +88,12 @@ jooq {
         }
     }
 }
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    enabled = true
+    mainClass.set('io.kadmos.demo.AccountServiceApplication')
+}

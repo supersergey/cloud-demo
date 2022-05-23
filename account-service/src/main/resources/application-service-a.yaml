@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 service:
   activeAccounts:
     - "fbf9f810-5b9d-4f08-bdc1-758703620b8e"
