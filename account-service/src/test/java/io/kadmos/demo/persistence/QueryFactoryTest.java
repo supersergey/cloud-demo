@@ -32,7 +32,8 @@ class QueryFactoryTest {
                      for update of transaction
                      ), 0),
                 '10'
-                );
+                )
+                returning opening_balance, amount;
             """
         );
     }
