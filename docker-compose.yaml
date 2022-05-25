@@ -16,7 +16,7 @@ services:
     image: kadmos-demo/account-service
     container_name: kadmos_demo_a
     depends_on:
-      - "db"
+      - db
     ports:
       - "8081:8081"
     environment:
@@ -29,14 +29,28 @@ services:
     image: kadmos-demo/account-service
     container_name: kadmos_demo_b
     depends_on:
-      - "db"
+      - db
     ports:
       - "8082:8082"
     environment:
       DATASOURCE_URL: jdbc:postgresql://db:5432/kadmosdemo
-      SPRING_ACTIVE_PROFILE: service-a
+      SPRING_ACTIVE_PROFILE: service-b
     networks:
       - kadmos_default
+
+  gateway:
+    image: kadmos-demo/gateway
+    container_name: gateway
+    depends_on:
+      - account-service-a
+      - account-service-b
+    ports:
+      - "8080:8080"
+    environment:
+      SERVICE_A_BASE_URI: http://account-service-a:8081
+      SERVICE_B_BASE_URI: http://account-service-b:8082
+    networks:
+        - kadmos_default
 volumes:
   db:
     driver: local
