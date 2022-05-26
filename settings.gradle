@@ -1,3 +1,4 @@
 rootProject.name = 'kadmos'
 include('gateway')
 include('account-service')
+include('e2e-tests')
