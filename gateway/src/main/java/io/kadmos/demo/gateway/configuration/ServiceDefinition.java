@@ -12,4 +12,5 @@ public record ServiceDefinition(
     @NotEmpty List<HttpMethod> methods,
     @NotNull URI baseUri,
     @NotNull URI routingPath
-) {}
+) {
+}

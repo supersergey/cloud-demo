@@ -12,5 +12,6 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "service")
 @Validated
 @ConstructorBinding
-public record ServiceProperties(@NotNull @Size(min = 1, max = 1) List<UUID> activeAccounts) {
+public record ServiceProperties(
+        @NotNull @Size(min = 1, max = 1) List<UUID> activeAccounts) {
 }

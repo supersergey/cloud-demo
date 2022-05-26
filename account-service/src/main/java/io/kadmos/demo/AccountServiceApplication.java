@@ -10,9 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableConfigurationProperties(ServiceProperties.class)
 public class AccountServiceApplication {
-	
-	public static void main(String[] args) {
-		SpringApplication.run(AccountServiceApplication.class, args);
-	}
-	
+
+    public static void main(final String[] args) {
+        SpringApplication.run(AccountServiceApplication.class, args);
+    }
 }
