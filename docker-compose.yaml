@@ -14,7 +14,7 @@ services:
 
   account-service-a:
     image: kadmos-demo/account-service
-    container_name: kadmos_demo_a
+    container_name: service-a
     depends_on:
       - db
     ports:
@@ -27,7 +27,7 @@ services:
 
   account-service-b:
     image: kadmos-demo/account-service
-    container_name: kadmos_demo_b
+    container_name: service-b
     depends_on:
       - db
     ports:
