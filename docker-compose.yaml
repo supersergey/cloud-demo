@@ -11,6 +11,8 @@ services:
       - db.env
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - kadmos_default
 
   account-service-a:
     image: kadmos-demo/account-service
