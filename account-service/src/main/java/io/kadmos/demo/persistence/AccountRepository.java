@@ -46,24 +46,23 @@ public class AccountRepository {
     }
 
     private Pair<BigDecimal, BigDecimal> fetchLastTransaction(UUID accountId) {
-        var lastRecord = jooq
-            .select(TRANSACTION.OPENING_BALANCE, TRANSACTION.AMOUNT)
-            .from(TRANSACTION)
-            .where(TRANSACTION.ACCOUNT_ID.eq(accountId))
-            .orderBy(TRANSACTION.CREATED_AT.desc())
-            .limit(1)
-            .fetchOne();
-        if (lastRecord == null) {
-            return null;
-        } else {
-            return Pair.of(
-                lastRecord.getValue(TRANSACTION.OPENING_BALANCE),
-                lastRecord.getValue(TRANSACTION.AMOUNT)
-            );
-        }
+        var lastRecord = jooq.select(TRANSACTION.OPENING_BALANCE, TRANSACTION.AMOUNT)
+                .from(TRANSACTION)
+                .where(TRANSACTION.ACCOUNT_ID.eq(accountId))
+                .orderBy(TRANSACTION.ID.desc())
+                .limit(1)
+                .fetchOne();
+            if (lastRecord != null) {
+                return Pair.of(
+                    lastRecord.getValue(TRANSACTION.OPENING_BALANCE),
+                    lastRecord.getValue(TRANSACTION.AMOUNT)
+                );
+            } else {
+                return null;
+            }
     }
 
-    private class BigDecimalWrapper {
+    private static class BigDecimalWrapper {
         private BigDecimal value;
 
         BigDecimalWrapper(BigDecimal initial) {

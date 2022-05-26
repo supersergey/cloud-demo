@@ -88,15 +88,24 @@ class AccountRepositoryTest {
     @Test
     void shouldExecuteTransactionsInParallel() {
         // given
-        var accountId = UUID.randomUUID();
-        var transaction = new Transaction(
-            accountId, BigDecimal.ONE
+        var accountAId = UUID.randomUUID();
+        var accountBId = UUID.randomUUID();
+        var transactionA = new Transaction(
+            accountAId, BigDecimal.ONE
+        );
+        var transactionB = new Transaction(
+            accountBId, BigDecimal.ONE
         );
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             threads.add(new Thread(() -> {
-                for (int j = 0; j < 10; j++) {
-                    repository.save(transaction);
+                for (int j = 0; j < 5; j++) {
+                    repository.save(transactionA);
+                }
+            }));
+            threads.add(new Thread(() -> {
+                for (int j = 0; j < 5; j++) {
+                    repository.save(transactionB);
                 }
             }));
         }
@@ -111,10 +120,15 @@ class AccountRepositoryTest {
         }
 
         // then
-        var actual = repository.getBalance(accountId);
-        assertThat(actual)
+        var actualA = repository.getBalance(accountAId);
+        var actualB = repository.getBalance(accountAId);
+        assertThat(actualA)
             .isNotEmpty().get()
             .usingComparator(BigDecimal::compareTo)
-            .isEqualTo(BigDecimal.valueOf(1000));
+            .isEqualTo(BigDecimal.valueOf(500));
+        assertThat(actualB)
+            .isNotEmpty().get()
+            .usingComparator(BigDecimal::compareTo)
+            .isEqualTo(BigDecimal.valueOf(500));
     }
 }

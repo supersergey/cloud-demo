@@ -1,5 +1,6 @@
 package io.kadmos.demo.persistence.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.kadmos.demo.configuration.ServiceProperties;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -32,6 +33,7 @@ public class JooqTestConfiguration {
             .username(postgreSQLContainer.getUsername())
             .password(postgreSQLContainer.getPassword())
             .driverClassName("org.postgresql.Driver")
+            .type(HikariDataSource.class)
             .build();
     }
 

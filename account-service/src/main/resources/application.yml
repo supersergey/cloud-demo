@@ -1,9 +1,13 @@
 spring:
   datasource:
+    type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/kadmosdemo
     username: postgres
     password: postgres
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+
   flyway:
     enabled: true
     default-schema: main
